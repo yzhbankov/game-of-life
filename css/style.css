@@ -1,7 +1,19 @@
+.title {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 30px; }
+
+.grid {
+  margin: 0 auto;
+  height: 400px; }
+
+.controlPannel {
+  position: relative; }
+
 .empty {
   background-color: ghostwhite;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-style: solid;
   border-width: 1px;
   border-color: gray;
@@ -9,8 +21,8 @@
 
 .full {
   background-color: aquamarine;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-style: solid;
   border-width: 1px;
   border-color: gray;
