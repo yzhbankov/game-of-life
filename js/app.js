@@ -1,8 +1,8 @@
 /**
  * Created by Iaroslav Zhbankov on 22.01.2017.
  */
-var xBoard = 5;
-var yBoard = 5;
+var xBoard = 20;
+var yBoard = 20;
 var board = [];
 for (var i = 0; i < xBoard; i++)
     for (var j = 0; j < yBoard; j++) {
@@ -42,12 +42,24 @@ var Board = React.createClass({
     },
     getBox: function (board) {
         var same = this;
+        const cellStyle = {
+            clear: 'both'
+        };
         var boardLis = board.map(function (item, index) {
             if (item == null) {
-                return <div onClick={same.checkCell} id={index} className='empty'></div>
+                if ((index) % xBoard == 0) {
+                    return <div onClick={same.checkCell} style={cellStyle} id={index} className='empty'></div>
+                } else {
+                    return <div onClick={same.checkCell} id={index} className='empty'></div>
+                }
             } else {
-                return <div onClick={same.checkCell} id={index} className='full'></div>
+                if ((index) % xBoard == 0) {
+                    return <div onClick={same.checkCell} style={cellStyle} id={index} className='full'></div>
+                } else {
+                    return <div onClick={same.checkCell} id={index} className='full'></div>
+                }
             }
+
         });
         return (boardLis)
     },
