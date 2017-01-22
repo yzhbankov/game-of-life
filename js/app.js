@@ -24,34 +24,44 @@ function boardConstructor(x, y) {
 
     return randomCreature(board);
 }
-function getNeighbours(board, i, j, x, y) {
+function getNeighbours(board, i, x, y) {
     var neighbours = [];
-    if (board[i + 1]) {
+    if ((board[i + 1]) && ((i + 1) % x != 0)) {
         neighbours.push(board[i + 1])
     }
-    if (board[i - 1]) {
+    if ((board[i - 1]) && ((i) % x != 0) && (i != 0)) {
         neighbours.push(board[i - 1])
     }
-    if (board[j + 1]) {
-        neighbours.push(board[j + 1])
+    if ((board[i + x]) && ((i + x) < (board.length))) {
+        neighbours.push(board[i + x])
     }
-    if (board[j - 1]) {
-        neighbours.push(board[j - 1])
+    if ((board[i - x]) && ((i - x) >= 0)) {
+        neighbours.push(board[i - x])
     }
-    
-    if (board[i + 1]) {
-        neighbours.push(board[i + 1])
+
+    if ((board[i + 1 - x]) && ((i + 1) % x != 0) && ((i + 1 - x) >= 0)) {
+        neighbours.push(board[i + 1 - x])
     }
-    if (board[i + 1]) {
-        neighbours.push(board[i + 1])
+    if ((board[i + 1 + x]) && ((i + 1) % x != 0) && ((i + 1 + x) < board.length)) {
+        neighbours.push(board[i + 1 + x])
     }
-    if (board[i + 1]) {
-        neighbours.push(board[i + 1])
+    if ((board[i - 1 + x]) && ((i) % x != 0) && ((i - 1 + x) < (board.length))) {
+        neighbours.push(board[i - 1 + x])
     }
-    if (board[i + 1]) {
-        neighbours.push(board[i + 1])
+    if ((board[i - 1 - x]) && ((i) % x != 0) && ((i - 1 - x) >= 0)) {
+        neighbours.push(board[i - 1 - x])
     }
+    return neighbours;
 }
+
+function getAllNeighbours(board, x, y) {
+    var allNeighbours = [];
+    for (var i = 0; i < board.length; i++) {
+        allNeighbours.push(getNeighbours(board, i, x, y))
+    }
+    return allNeighbours;
+}
+
 function gameRunning(board) {
 
 }
