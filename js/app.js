@@ -60,7 +60,6 @@ function getAllNeighbours(board, x, y) {
     }
     return allNeighbours;
 }
-
 function lifeGeneration(board, x, y) {
     var allneighbours = getAllNeighbours(board, x, y);
     for (var i = 0; i < board.length; i++) {
