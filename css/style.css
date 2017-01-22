@@ -1,0 +1,19 @@
+.empty {
+  background-color: ghostwhite;
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: gray;
+  float: left; }
+
+.full {
+  background-color: aquamarine;
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: gray;
+  float: left; }
+
+/*# sourceMappingURL=style.css.map */
