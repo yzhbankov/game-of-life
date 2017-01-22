@@ -51,9 +51,8 @@ function getNeighbours(board, i, x, y) {
     if ((board[i - 1 - x]) && ((i) % x != 0) && ((i - 1 - x) >= 0)) {
         neighbours.push(board[i - 1 - x])
     }
-    return neighbours;
+    return neighbours.length;
 }
-
 function getAllNeighbours(board, x, y) {
     var allNeighbours = [];
     for (var i = 0; i < board.length; i++) {
@@ -62,8 +61,17 @@ function getAllNeighbours(board, x, y) {
     return allNeighbours;
 }
 
-function gameRunning(board) {
-
+function lifeGeneration(board, x, y) {
+    var allneighbours = getAllNeighbours(board, x, y);
+    for (var i = 0; i < board.length; i++) {
+        if ((board[i]) && ((allneighbours[i] < 2) || (allneighbours[i] > 3))) {
+            board[i] = null;
+        }
+        if ((!board[i]) && (allneighbours[i] == 3)) {
+            board[i] = 1;
+        }
+    }
+    return board;
 }
 
 var xBoard = 20;
