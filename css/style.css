@@ -16,4 +16,10 @@
   border-color: gray;
   float: left; }
 
+.empty:hover {
+  border-width: 2px; }
+
+.full:hover {
+  border-width: 2px; }
+
 /*# sourceMappingURL=style.css.map */

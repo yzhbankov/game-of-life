@@ -12,7 +12,7 @@ for (var i = 0; i < xBoard; i++)
 function randomCreature(arr) {
     var counter = 0;
     for (var i = 0; i < arr.length; i++) {
-        if ((Math.round(Math.random()) == 1) && (counter < Math.round(arr.length / 3))) {
+        if ((Math.round(Math.random()*3) == 1) && (counter < Math.round(arr.length / 3))) {
             arr[i] = 1;
             counter++;
         }
