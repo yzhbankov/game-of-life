@@ -3,7 +3,14 @@
  */
 
 
-
+function clearBoard(x, y) {
+    var board = [];
+    for (var i = 0; i < x; i++)
+        for (var j = 0; j < y; j++) {
+            board.push(null);
+        }
+    return board;
+}
 function boardConstructor(x, y) {
     var board = [];
     for (var i = 0; i < x; i++)
@@ -81,11 +88,29 @@ var board = boardConstructor(xBoard, yBoard);
 var Board = React.createClass({
     getInitialState: function () {
         return {
-            board: board
+            board: board,
+            pause: true,
+            generation: 0
         }
     },
     runGame: function () {
+        var same = this;
+        this.setState({
+            pause: !same.state.pause
+        });
+        function life() {
+            board = lifeGeneration(same.state.board, xBoard, yBoard);
+            if (same.state.pause) {
+                clearInterval(interval);
+            }
+            var newGeneration = same.state.generation + 1;
+            same.setState({
+                board: board,
+                generation: newGeneration
+            });
+        }
 
+        var interval = setInterval(life, 500);
     },
     checkCell: function (e) {
         var index = e.target.id;
@@ -96,6 +121,12 @@ var Board = React.createClass({
         }
         this.setState({
             board: board
+        })
+    },
+    clearBoard: function () {
+        this.setState({
+            board: clearBoard(xBoard, yBoard),
+            generation: 0
         })
     },
     getBox: function (board) {
@@ -135,11 +166,14 @@ var Board = React.createClass({
                 <div className='grid'>
                     {this.getBox(this.state.board)}
                 </div>
+                <div>Generation:<p>{this.state.generation}</p></div>
                 <div className="controlPannel">
                     <button onClick={this.newBoard} data-x={20} data-y={20}>20x20</button>
                     <button onClick={this.newBoard} data-x={30} data-y={20}>30x20</button>
                     <button onClick={this.newBoard} data-x={40} data-y={20}>40x20</button>
-                    <button onClick={this.runGame}>Run</button>
+                    <button onClick={this.runGame}>Run/Pause</button>
+                    <button onClick={this.clearBoard}>Clear</button>
+
                 </div>
             </div>
         )
