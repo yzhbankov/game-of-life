@@ -31,7 +31,7 @@ function boardConstructor(x, y) {
 
     return randomCreature(board);
 }
-function getNeighbours(board, i, x, y) {
+function getNeighbours(board, i, x) {
     var neighbours = [];
     if ((board[i + 1]) && ((i + 1) % x != 0)) {
         neighbours.push(board[i + 1])
@@ -72,8 +72,7 @@ function lifeGeneration(board, x, y) {
     for (var i = 0; i < board.length; i++) {
         if ((board[i]) && ((allneighbours[i] < 2) || (allneighbours[i] > 3))) {
             board[i] = null;
-        }
-        if ((!board[i]) && (allneighbours[i] == 3)) {
+        } else if ((!board[i]) && (allneighbours[i] == 3)) {
             board[i] = 1;
         }
     }
@@ -90,32 +89,38 @@ var Board = React.createClass({
         return {
             board: board,
             pause: true,
-            generation: 0
+            generation: 0,
+            xBoard: 20,
+            yBoard: 20
         }
     },
+    life: function () {
+        var board = this.state.board;
+        var xBoard = this.state.xBoard;
+        var yBoard = this.state.yBoard;
+        var generation = this.state.generation;
+        var newBoard = lifeGeneration(board, xBoard, yBoard);
+        var newGeneration = generation + 1;
+        this.setState({
+            board: newBoard,
+            generation: newGeneration
+        });
+
+
+    },
     runGame: function () {
+        console.log(1);
         var same = this;
         this.setState({
             pause: !same.state.pause
         });
-        function life() {
-            board = lifeGeneration(same.state.board, xBoard, yBoard);
-            if (same.state.pause) {
-                clearInterval(interval);
-            }
-            if (board.indexOf(1) != -1) {
-                var newGeneration = same.state.generation + 1;
-            } else {
-                var newGeneration = 0;
-                clearInterval(interval);
-            }
-            same.setState({
-                board: board,
-                generation: newGeneration
-            });
+        console.log(2);
+        if (this.state.pause) {
+            console.log(3);
+            var interval = setInterval(this.life, 100);
+        } else {
+            clearInterval(interval);
         }
-
-        var interval = setInterval(life, 100);
     },
     checkCell: function (e) {
         var index = e.target.id;
@@ -128,10 +133,12 @@ var Board = React.createClass({
         this.setState({
             board: newBoard
         })
+
     },
     clearBoard: function () {
+        var same = this;
         this.setState({
-            board: clearBoard(xBoard, yBoard),
+            board: clearBoard(same.state.xBoard, same.state.yBoard),
             generation: 0
         })
     },
@@ -140,17 +147,17 @@ var Board = React.createClass({
         const cellStyle = {
             clear: 'both'
         };
-        var board = this.state.board;
+
 
         var boardList = board.map(function (item, index) {
             if (item == null) {
-                if (((index) % xBoard == 0) && (index != 0)) {
+                if (((index) % same.state.xBoard == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='empty'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='empty'></div>
                 }
             } else {
-                if (((index) % xBoard == 0) && (index != 0)) {
+                if (((index) % same.state.xBoard == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='full'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='full'></div>
@@ -161,13 +168,16 @@ var Board = React.createClass({
         return (boardList)
     },
     newBoard: function (e) {
+        e.preventDefault();
         var x = e.target.getAttribute('data-x');
         var y = e.target.getAttribute('data-y');
-        xBoard = x;
-        yBoard = y;
+        var newBoard = boardConstructor(x, y);
         this.setState({
-            board: boardConstructor(x, y)
+            board: newBoard,
+            xBoard: x,
+            yBoard: y
         })
+
     },
     render: function () {
         return (<div>
@@ -177,7 +187,7 @@ var Board = React.createClass({
                 <div>Generation:<p>{this.state.generation}</p></div>
                 <div className="controlPannel">
                     <button onClick={this.newBoard} data-x={20} data-y={20}>20x20</button>
-                    <button onClick={this.newBoard} data-x={30} data-y={30}>30x30</button>
+                    <button onClick={this.newBoard} data-x={10} data-y={10}>10x10</button>
                     <button onClick={this.newBoard} data-x={40} data-y={40}>40x40</button>
                     <button onClick={this.runGame}>Run/Pause</button>
                     <button onClick={this.clearBoard}>Clear</button>
