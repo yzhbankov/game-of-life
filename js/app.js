@@ -103,24 +103,30 @@ var Board = React.createClass({
             if (same.state.pause) {
                 clearInterval(interval);
             }
-            var newGeneration = same.state.generation + 1;
+            if (board.indexOf(1) != -1) {
+                var newGeneration = same.state.generation + 1;
+            } else {
+                var newGeneration = 0;
+                clearInterval(interval);
+            }
             same.setState({
                 board: board,
                 generation: newGeneration
             });
         }
 
-        var interval = setInterval(life, 500);
+        var interval = setInterval(life, 100);
     },
     checkCell: function (e) {
         var index = e.target.id;
+        var newBoard = this.state.board;
         if (e.target.className == 'empty') {
-            board[index] = 1;
+            newBoard[index] = 1;
         } else {
-            board[index] = null
+            newBoard[index] = null
         }
         this.setState({
-            board: board
+            board: newBoard
         })
     },
     clearBoard: function () {
@@ -134,15 +140,17 @@ var Board = React.createClass({
         const cellStyle = {
             clear: 'both'
         };
-        var boardLis = board.map(function (item, index) {
+        var board = this.state.board;
+
+        var boardList = board.map(function (item, index) {
             if (item == null) {
-                if ((index) % xBoard == 0) {
+                if (((index) % xBoard == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='empty'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='empty'></div>
                 }
             } else {
-                if ((index) % xBoard == 0) {
+                if (((index) % xBoard == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='full'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='full'></div>
@@ -150,7 +158,7 @@ var Board = React.createClass({
             }
 
         });
-        return (boardLis)
+        return (boardList)
     },
     newBoard: function (e) {
         var x = e.target.getAttribute('data-x');
@@ -169,8 +177,8 @@ var Board = React.createClass({
                 <div>Generation:<p>{this.state.generation}</p></div>
                 <div className="controlPannel">
                     <button onClick={this.newBoard} data-x={20} data-y={20}>20x20</button>
-                    <button onClick={this.newBoard} data-x={30} data-y={20}>30x20</button>
-                    <button onClick={this.newBoard} data-x={40} data-y={20}>40x20</button>
+                    <button onClick={this.newBoard} data-x={30} data-y={30}>30x30</button>
+                    <button onClick={this.newBoard} data-x={40} data-y={40}>40x40</button>
                     <button onClick={this.runGame}>Run/Pause</button>
                     <button onClick={this.clearBoard}>Clear</button>
 
@@ -181,6 +189,6 @@ var Board = React.createClass({
 });
 
 ReactDOM.render(
-    <Board board={board}/>,
+    <Board />,
     document.getElementById('box')
 );
