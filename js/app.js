@@ -1,4 +1,7 @@
 /**
+ * Created by ְֳִּ 3 on 24.01.2017.
+ */
+/**
  * Created by Iaroslav Zhbankov on 22.01.2017.
  */
 
@@ -31,39 +34,42 @@ function boardConstructor(x, y) {
 
     return randomCreature(board);
 }
-function getNeighbours(board, i, x) {
+
+function getNeighbours(board, i, xBoard) {
+    var x = Number(xBoard);
     var neighbours = [];
-    if ((board[i + 1]) && ((i + 1) % x != 0)) {
-        neighbours.push(board[i + 1])
+    if ((board[i + 1] == 1) && ((i + 1) % x != 0)) {
+        neighbours.push(board[i + 1]);
     }
-    if ((board[i - 1]) && ((i) % x != 0) && (i != 0)) {
+    if ((board[i - 1] == 1) && ((i % x) != 0)) {
         neighbours.push(board[i - 1])
     }
-    if ((board[i + x]) && ((i + x) < (board.length))) {
+    if ((board[i + x] == 1) && ((i + x) < (board.length - 1))) {
         neighbours.push(board[i + x])
     }
-    if ((board[i - x]) && ((i - x) >= 0)) {
+    if ((board[i - x] == 1) && ((i - x) >= 0)) {
         neighbours.push(board[i - x])
     }
 
-    if ((board[i + 1 - x]) && ((i + 1) % x != 0) && ((i + 1 - x) >= 0)) {
+    if ((board[i + 1 - x] == 1) && (((i + 1) % x) != 0) && ((i + 1 - x) >= 0)) {
         neighbours.push(board[i + 1 - x])
     }
-    if ((board[i + 1 + x]) && ((i + 1) % x != 0) && ((i + 1 + x) < board.length)) {
+    if ((board[i + 1 + x] == 1) && (((i + 1) % x) != 0) && ((i + 1 + x) < (board.length - 1))) {
         neighbours.push(board[i + 1 + x])
     }
-    if ((board[i - 1 + x]) && ((i) % x != 0) && ((i - 1 + x) < (board.length))) {
+    if ((board[i - 1 + x] == 1) && ((i % x) != 0) && ((i - 1 + x) < (board.length - 1))) {
         neighbours.push(board[i - 1 + x])
     }
-    if ((board[i - 1 - x]) && ((i) % x != 0) && ((i - 1 - x) >= 0)) {
+    if ((board[i - 1 - x] == 1) && ((i % x) != 0) && ((i - 1 - x) >= 0)) {
         neighbours.push(board[i - 1 - x])
     }
     return neighbours.length;
 }
-function getAllNeighbours(board, x, y) {
+function getAllNeighbours(board, x) {
     var allNeighbours = [];
     for (var i = 0; i < board.length; i++) {
-        allNeighbours.push(getNeighbours(board, i, x, y))
+        allNeighbours.push(getNeighbours(board, i, x))
+
     }
     return allNeighbours;
 }
@@ -72,22 +78,19 @@ function lifeGeneration(board, x, y) {
     for (var i = 0; i < board.length; i++) {
         if ((board[i]) && ((allneighbours[i] < 2) || (allneighbours[i] > 3))) {
             board[i] = null;
+
         } else if ((!board[i]) && (allneighbours[i] == 3)) {
             board[i] = 1;
         }
     }
+
     return board;
 }
-
-var xBoard = 20;
-var yBoard = 20;
-var board = boardConstructor(xBoard, yBoard);
-
 
 var Board = React.createClass({
     getInitialState: function () {
         return {
-            board: board,
+            board: boardConstructor(20, 20),
             pause: true,
             generation: 0,
             xBoard: 20,
@@ -105,23 +108,20 @@ var Board = React.createClass({
             board: newBoard,
             generation: newGeneration
         });
-
+        if (board.indexOf(1) == -1) {
+            clearInterval(this.interval);
+        }
 
     },
     runGame: function () {
-        console.log(1);
-        var same = this;
-        this.setState({
-            pause: !same.state.pause
-        });
-        console.log(2);
-        if (this.state.pause) {
-            console.log(3);
-            var interval = setInterval(this.life, 100);
-        } else {
-            clearInterval(interval);
-        }
+
+        this.interval = setInterval(this.life, 100);
+
     },
+    stopGame: function () {
+        clearInterval(this.interval);
+    },
+
     checkCell: function (e) {
         var index = e.target.id;
         var newBoard = this.state.board;
@@ -142,22 +142,21 @@ var Board = React.createClass({
             generation: 0
         })
     },
-    getBox: function (board) {
+    getBox: function () {
         var same = this;
         const cellStyle = {
             clear: 'both'
         };
-
-
+        var board = this.state.board;
         var boardList = board.map(function (item, index) {
             if (item == null) {
-                if (((index) % same.state.xBoard == 0) && (index != 0)) {
+                if (((index % same.state.xBoard) == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='empty'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='empty'></div>
                 }
             } else {
-                if (((index) % same.state.xBoard == 0) && (index != 0)) {
+                if (((index % same.state.xBoard) == 0) && (index != 0)) {
                     return <div onClick={same.checkCell} style={cellStyle} id={index} className='full'></div>
                 } else {
                     return <div onClick={same.checkCell} id={index} className='full'></div>
@@ -168,28 +167,26 @@ var Board = React.createClass({
         return (boardList)
     },
     newBoard: function (e) {
-        e.preventDefault();
-        var x = e.target.getAttribute('data-x');
-        var y = e.target.getAttribute('data-y');
-        var newBoard = boardConstructor(x, y);
         this.setState({
-            board: newBoard,
-            xBoard: x,
-            yBoard: y
+            board: boardConstructor(e.target.getAttribute('data-x'), e.target.getAttribute('data-y')),
+            xBoard: e.target.getAttribute('data-x'),
+            yBoard: e.target.getAttribute('data-y')
         })
 
     },
+
     render: function () {
         return (<div>
+                <div className='indicator'>Generation: {this.state.generation}</div>
                 <div className='grid'>
-                    {this.getBox(this.state.board)}
+                    {this.getBox()}
                 </div>
-                <div>Generation:<p>{this.state.generation}</p></div>
                 <div className="controlPannel">
                     <button onClick={this.newBoard} data-x={20} data-y={20}>20x20</button>
-                    <button onClick={this.newBoard} data-x={10} data-y={10}>10x10</button>
-                    <button onClick={this.newBoard} data-x={40} data-y={40}>40x40</button>
-                    <button onClick={this.runGame}>Run/Pause</button>
+                    <button onClick={this.newBoard} data-x={30} data-y={20}>30x20</button>
+                    <button onClick={this.newBoard} data-x={40} data-y={20}>40x20</button>
+                    <button onClick={this.runGame}>Run</button>
+                    <button onClick={this.stopGame}>Stop</button>
                     <button onClick={this.clearBoard}>Clear</button>
 
                 </div>
